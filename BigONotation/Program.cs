@@ -92,9 +92,6 @@ void ExponentialTest(float value, int interaction = 0)
 // O(log n) Logarithmic
 void LogarithmicTest(int length, int numberToFind)
 {
-    var cts = new CancellationTokenSource();
-    cts.CancelAfter(TimeSpan.FromSeconds(3));
-
     var interaction = 1;
     var findTheNumber = false;
     var indexToValidate = length / 2;
@@ -106,35 +103,25 @@ void LogarithmicTest(int length, int numberToFind)
 
     while (!findTheNumber)
     {
-        try
+        var valueFromRange = range[indexToValidate];
+
+        if (numberToFind > valueFromRange)
         {
-            cts.Token.ThrowIfCancellationRequested();
-
-            var valueFromRange = range[indexToValidate];
-
-            if (numberToFind > valueFromRange)
-            {
-                lastIndexUsed = indexToValidate;
-                var division = (length - indexToValidate);
-                indexToValidate = (division / 2) + indexToValidate;
-            }
-            else if (numberToFind < valueFromRange)
-            {
-                var division = indexToValidate - lastIndexUsed;
-                indexToValidate = ((division / 2) - indexToValidate)*-1;
-            }
-            else
-            {
-                findTheNumber = true;
-                Console.WriteLine($"interaction: {interaction}");
-            }
-
-            interaction++;
+            lastIndexUsed = indexToValidate;
+            var division = (length - indexToValidate);
+            indexToValidate = (division / 2) + indexToValidate;
         }
-        catch
+        else if (numberToFind < valueFromRange)
         {
-            Console.WriteLine("Error");
-            findTheNumber = true;
+            var division = indexToValidate - lastIndexUsed;
+            indexToValidate = ((division / 2) - indexToValidate) * -1;
         }
+        else
+        {
+            Console.WriteLine($"interaction: {interaction}");
+            break;
+        }
+
+        interaction++;
     }
 }
